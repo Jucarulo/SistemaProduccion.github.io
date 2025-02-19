@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ingresar Producción</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .fade {
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+        }
+        .fade.in {
+            opacity: 1;
+        }
+        .checkbox-container {
+            background-color: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+        .form-label {
+            font-weight: bold;
+            color: #343a40;
+        }
+        .center-button {
+            display: flex;
+            justify-content: center;
+        }
+        .notification {
+            display: none;
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+    </style>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            document.body.classList.add('fade', 'in'); // Add fade-in effect on page load
+            const links = document.querySelectorAll('a');
+            links.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const targetUrl = this.getAttribute('href');
+                    document.body.classList.add('fade');
+                    setTimeout(() => {
+                        window.location.href = targetUrl;
+                    }, 500); // Match the duration of the CSS transition
+                });
+            });
+
+            // Function to set the current date and time
+            function setCurrentDateTime() {
+                const now = new Date();
+                const options = { year: 'numeric', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true };
+                const formattedDateTime = now.toLocaleString('es-ES', options);
+                document.getElementById('fecha').value = formattedDateTime;
+            }
+
+            setCurrentDateTime(); // Call the function to set the date and time
+
+            // Handle form submission
+            const form = document.querySelector('form');
+            form.addEventListener('submit', function(event) {
+                event.preventDefault();
+                showNotification("Unidades producidas cargadas al sistema", true);
+                form.reset(); // Reset the form after submission
+                setCurrentDateTime(); // Reset the date and time
+            });
+        });
+
+        function showNotification(message, isSuccess) {
+            const notification = document.getElementById('notification');
+            notification.innerText = message;
+            notification.className = `notification ${isSuccess ? 'success' : 'error'}`;
+            notification.style.display = 'block'; // Show the notification
+        }
+
+        function logout() {
+            localStorage.clear(); // Si guardaste algo en localStorage
+            sessionStorage.clear(); // Si usaste sessionStorage
+            window.location.href = "index.html";
+        }
+    </script>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg bg-primary navbar-dark">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="#">
+                <img src="Image/Designer.jpeg" alt="Logo" height="40" class="me-2">
+                <span class="fw-bold">Sistema de Producción</span>
+            </a>
+            <!-- Botón de Salir -->
+            <button class="btn btn-warning" onclick="logout()" title="Cerrar Sesión">Cerrar Sesión</button>
+        </div>
+    </nav>
+
+    <!-- Contenido principal -->
+    <div class="container mt-5">
+        <h3 class="text-center fw-bold">Ingresar Producción</h3>
+        <div id="notification" class="notification"></div> <!-- Notification area -->
+        <!-- Formulario de ingreso de producción -->
+        <form>
+            <div class="mb-3">
+                <label for="fecha" class="form-label">Fecha</label>
+                <input type="text" class="form-control" id="fecha" required readonly>
+            </div>
+            <div class="mb-3">
+                <label for="operario" class="form-label">Operario</label>
+                <input type="text" class="form-control" id="operario" required>
+            </div>
+            <div class="mb-3">
+                <label for="unidades" class="form-label">Unidades Producidas</label>
+                <input type="number" class="form-control" id="unidades" required>
+            </div>
+            <div class="mb-3">
+                <label for="area" class="form-label">Área</label>
+                <select class="form-select" id="area" required>
+                    <option value="">Seleccionar área...</option>
+                    <option value="Corte">Corte</option>
+                    <option value="Confección">Confección</option>
+                    <option value="Revisión">Revisión</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="observaciones" class="form-label">Observaciones</label>
+                <textarea class="form-control" id="observaciones" rows="3"></textarea>
+            </div>
+            <div class="center-button">
+                <button type="submit" class="btn btn-primary">Guardar</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Pie de página -->
+    <footer class="text-center mt-5 py-3 bg-light">
+        <p class="mb-0">&copy; 2025 Sistema de Producción de Confección</p>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
+</body>
+</html>
+</create_file>
+
+<!--<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crear Usuario Operario</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <script>
+        function validateForm() {
+            const nombre = document.getElementById('nombre').value;
+            const email = document.getElementById('email').value;
+            const area = document.getElementById('area').value;
+
+            // Prevent blank entries
+            if (!nombre || !email || area === "Seleccionar área...") {
+                return; // Do not proceed if fields are empty
+            }
+
+            // Proceed with form submission logic if needed
+            // For example, you can add the user to a list here
+        }
+
+        document.addEventListener("DOMContentLoaded", function() {
+            const links = document.querySelectorAll('a');
+            links.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const targetUrl = this.getAttribute('href');
+                    document.body.classList.add('fade');
+                    setTimeout(() => {
+                        window.location.href = targetUrl;
+                    }, 500); // Match the duration of the CSS transition
+                });
+            });
+        });
+    </script>
+</head>
+<body>
+
+    <div class="container vh-100 d-flex align-items-center justify-content-center">
+        <div class="card shadow p-4" style="width: 30rem;">
+            
+            Logo de la empresa
+            <div class="text-center mb-4">
+                <img src="C:\Users\juan.ruiz\Documents\Trabajos realizados\Sistema Producción\Image\Designer.jpeg" alt="Logo de la Empresa" style="width: 120px;">
+            </div>
+
+            <h3 class="text-center mb-4">Crear Usuario Operario</h3>
+
+            <form onsubmit="event.preventDefault(); validateForm();">
+                <div class="mb-3">
+                    <label for="nombre" class="form-label">Nombre</label>
+                    <input type="text" class="form-control" id="nombre" placeholder="Nombre completo">
+                </div>
+                <div class="mb-3">
+                    <label for="email" class="form-label">Correo Electrónico</label>
+                    <input type="email" class="form-control" id="email" placeholder="usuario@example.com">
+                </div>
+                <div class="mb-3">
+                    <label for="area" class="form-label">Área de Trabajo</label>
+                    <select id="area" class="form-select">
+                        <option selected>Seleccionar área...</option>
+                        <option value="1">Corte</option>
+                        <option value="2">Costura</option>
+                        <option value="3">Empaque</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary w-100">Crear Usuario</button>
+                <a href="gestion_usuarios.html" class="btn btn-secondary w-100 mt-3">Volver</a>
+            </form>
+        </div>
+    </div>
+    
+   
+    <footer class="text-center mt-5 py-3 bg-light">
+        <p class="text-muted">&copy; 2025 Sistema de Producción de Confección</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>-->
+
+
+<!--<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crear Usuario Operario</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <script>
+        function validateForm() {
+            const nombre = document.getElementById('nombre').value;
+            const email = document.getElementById('email').value;
+            const area = document.getElementById('area').value;
+
+            // Prevent blank entries
+            if (!nombre || !email || area === "Seleccionar área...") {
+                return; // Do not proceed if fields are empty
+            }
+
+            // Proceed with form submission logic if needed
+            // For example, you can add the user to a list here
+        }
+
+        document.addEventListener("DOMContentLoaded", function() {
+            const links = document.querySelectorAll('a');
+            links.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const targetUrl = this.getAttribute('href');
+                    document.body.classList.add('fade');
+                    setTimeout(() => {
+                        window.location.href = targetUrl;
+                    }, 500); // Match the duration of the CSS transition
+                });
+            });
+        });
+    </script>
+</head>
+<body>
+
+    <div class="container vh-100 d-flex align-items-center justify-content-center">
+        <div class="card shadow p-4" style="width: 30rem;">
+            
+            Logo de la empresa
+            <div class="text-center mb-4">
+                <img src="C:\Users\juan.ruiz\Documents\Trabajos realizados\Sistema Producción\Image\Designer.jpeg" alt="Logo de la Empresa" style="width: 120px;">
+            </div>
+
+            <h3 class="text-center mb-4">Crear Usuario Operario</h3>
+
+            <form onsubmit="event.preventDefault(); validateForm();">
+                <div class="mb-3">
+                    <label for="nombre" class="form-label">Nombre</label>
+                    <input type="text" class="form-control" id="nombre" placeholder="Nombre completo">
+                </div>
+                <div class="mb-3">
+                    <label for="email" class="form-label">Correo Electrónico</label>
+                    <input type="email" class="form-control" id="email" placeholder="usuario@example.com">
+                </div>
+                <div class="mb-3">
+                    <label for="area" class="form-label">Área de Trabajo</label>
+                    <select id="area" class="form-select">
+                        <option selected>Seleccionar área...</option>
+                        <option value="1">Corte</option>
+                        <option value="2">Costura</option>
+                        <option value="3">Empaque</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary w-100">Crear Usuario</button>
+                <a href="gestion_usuarios.html" class="btn btn-secondary w-100 mt-3">Volver</a>
+            </form>
+        </div>
+    </div>
+    
+   
+    <footer class="text-center mt-5 py-3 bg-light">
+        <p class="text-muted">&copy; 2025 Sistema de Producción de Confección</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>-->

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Producción</title>
+    <link rel="icon" href="image/Designer.jpeg" type="image/png">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const links = document.querySelectorAll('a');
+            links.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const targetUrl = this.getAttribute('href');
+                    document.body.classList.add('fade');
+                    setTimeout(() => {
+                        window.location.href = targetUrl;
+                    }, 500); // Match the duration of the CSS transition
+                });
+            });
+        });
+    </script>
+
+
+    <!-- Contenedor principal -->
+    <div class="container vh-100 d-flex align-items-center justify-content-center">
+        <div class="card shadow-lg p-4 text-center" style="width: 25rem; border-radius: 15px;">
+            <!-- Logo de la empresa -->
+            <div class="text-center mb-4">
+                <img src="Image\LogoSystem.png" alt="Logo de la Empresa" style="width: 120px;">
+            </div>
+
+            <h3 class="mb-4 fw-bold">Iniciar Sesión</h3>
+            <form id="login-form">
+                <div class="mb-3 text-start">
+                    <label for="email" class="form-label">Correo Electrónico</label>
+                    <input type="email" class="form-control" id="email" placeholder="usuario@example.com" required>
+                </div>
+                <div class="mb-3 text-start">
+                    <label for="password" class="form-label">Contraseña</label>
+                    <input type="password" class="form-control" id="password" placeholder="••••••••" required>
+                </div>
+                <div id="error-message" class="text-danger text-center d-none mb-3">Usuario o contraseña incorrectos.</div>
+                <button type="submit" class="btn btn-primary w-100">Iniciar Sesión</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+document.getElementById('login-form').addEventListener('submit', function(event) {
+    event.preventDefault();
+
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+    const errorMessage = document.getElementById('error-message');
+
+    // Simulación de roles (debería venir de una base de datos)
+    const users = {
+        "admin@example.com": { role: "admin", password: "admin123" },
+        "operario@example.com": { role: "operario", password: "operario123" }
+    };
+
+    if (users[email] && users[email].password === password) {
+        const role = users[email].role;
+        document.body.classList.add('fade'); // Add fade class before redirect
+        setTimeout(() => {
+            window.location.href = role === "admin" ? "panel_admin.html" : "ingresar_produccion.html";
+        }, 500); // Match the duration of the CSS transition
+    } else {
+        errorMessage.classList.remove('d-none');
+    }
+
+        });
+    </script>
+
+    <!-- Pie de página -->
+    <footer class="text-center mt-5 py-3 bg-light">
+        <p class="text-muted">&copy; 2025 Sistema de Producción de Confección</p>
+    </footer>
+
+</body>
+</html>
