@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Producción</title>
+    <link rel="icon" href="image/Designer.jpeg" type="image/png">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const links = document.querySelectorAll('a');
+            links.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const targetUrl = this.getAttribute('href');
+                    document.body.classList.add('fade');
+                    setTimeout(() => {
+                        window.location.href = targetUrl;
+                    }, 500); // Match the duration of the CSS transition
+                });
+            });
+        });
+
+        function exportToExcel() {
+            // Obtener la tabla
+            const table = document.querySelector("table");
+            const workbook = XLSX.utils.table_to_book(table, { sheet: "Producción" });
+
+            // Calcular métricas
+            const totalUnits = Array.from(table.querySelectorAll("tbody tr"))
+                .reduce((sum, row) => sum + parseInt(row.cells[2].innerText), 0);
+            const operarios = new Set(Array.from(table.querySelectorAll("tbody tr"))
+                .map(row => row.cells[1].innerText)).size;
+
+            // Agregar métricas a una nueva hoja
+            const metricsData = [
+                ["Métrica", "Valor"],
+                ["Total Unidades Producidas", totalUnits],
+                ["Número de Operarios", operarios]
+            ];
+            const metricsSheet = XLSX.utils.aoa_to_sheet(metricsData);
+            XLSX.utils.book_append_sheet(workbook, metricsSheet, "Métricas");
+
+            // Datos para el gráfico de torta
+            const chartData = [
+                ["Área", "Unidades Producidas"],
+                ["Corte", 200],
+                ["Confección", 300],
+                ["Revisión", 150]
+            ];
+            const chartSheet = XLSX.utils.aoa_to_sheet(chartData);
+            XLSX.utils.book_append_sheet(workbook, chartSheet, "Gráfico de Tortas");
+
+            // Generar el archivo Excel
+            XLSX.writeFile(workbook, "gestion_produccion.xlsx");
+        }
+    </script>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow">
+        <div class="container d-flex justify-content-between align-items-center">
+            <div class="d-flex align-items-center">
+                <a href="javascript:history.back()" class="btn btn-secondary btn-sm me-2" title="Volver">
+                    <i class="fas fa-arrow-left"></i>
+                </a>
+            </div>
+            <div class="text-center flex-grow-1">
+                <a class="navbar-brand d-flex align-items-center justify-content-center" href="#">
+                    <img src="Image\LogoSystem.png" alt="Logo" style="width: 40px; height: 40px; margin-right: 10px;">
+                    <span class="fw-bold">Sistema de Producción</span>
+                </a>
+            </div>
+            <button class="btn btn-warning" onclick="logout()" title="Cerrar Sesión">Cerrar Sesión</button>
+        </div>
+    </nav>
+    <script>
+        function logout() {
+            localStorage.clear(); // Si guardaste algo en localStorage
+            sessionStorage.clear(); // Si usaste sessionStorage
+            window.location.href = "index.html";
+        }
+    </script>
+
+    <!-- Contenido principal -->
+    <div class="container mt-5">
+        <h3 class="text-center fw-bold">Gestión de Producción</h3>
+
+        <!-- Filtros y exportación -->
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <input type="date" class="form-control w-auto">
+            <button class="btn btn-success" onclick="exportToExcel()">
+                <i class="fas fa-file-excel"></i> Exportar a Excel
+            </button>
+        </div>
+
+        <!-- Tabla de producción -->
+        <div class="table-responsive">
+            <table class="table table-hover table-bordered text-center">
+                <thead class="table-primary">
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Operario</th>
+                        <th>Unidades Producidas</th>
+                        <th>Área</th>
+                        <th>Observaciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>5/2/2025 10:00:00 a. m.</td>
+                        <td>Juan Pérez</td>
+                        <td>50</td>
+                        <td>Corte</td>
+                        <td>Sin observaciones</td>
+                    </tr>
+                    <tr>
+                        <td>5/2/2025 11:00:00 a. m.</td>
+                        <td>Ana Gómez</td>
+                        <td>60</td>
+                        <td>Confección</td>
+                        <td>Sin observaciones</td>
+                    </tr>
+                    <tr>
+                        <td>5/2/2025 12:00:00 p. m.</td>
+                        <td>Carlos Ramírez</td>
+                        <td>45</td>
+                        <td>Revisión</td>
+                        <td>Sin observaciones</td>
+                    </tr>
+                    <tr>
+                        <td>5/3/2025 9:00:00 a. m.</td>
+                        <td>Laura Martínez</td>
+                        <td>70</td>
+                        <td>Corte</td>
+                        <td>Sin observaciones</td>
+                    </tr>
+                    <tr>
+                        <td>5/3/2025 10:30:00 a. m.</td>
+                        <td>Pedro López</td>
+                        <td>80</td>
+                        <td>Confección</td>
+                        <td>Sin observaciones</td>
+                    </tr>
+                    <tr>
+                        <td>5/4/2025 11:00:00 a. m.</td>
+                        <td>María Fernández</td>
+                        <td>90</td>
+                        <td>Revisión</td>
+                        <td>Sin observaciones</td>
+                    </tr>
+                    <tr>
+                        <td>5/5/2025 8:00:00 a. m.</td>
+                        <td>Jorge Silva</td>
+                        <td>100</td>
+                        <td>Corte</td>
+                        <td>Sin observaciones</td>
+                    </tr>
+                    <tr>
+                        <td>5/5/2025 9:30:00 a. m.</td>
+                        <td>Clara Ruiz</td>
+                        <td>110</td>
+                        <td>Confección</td>
+                        <td>Sin observaciones</td>
+                    </tr>
+                    <tr>
+                        <td>5/6/2025 10:00:00 a. m.</td>
+                        <td>Fernando Torres</td>
+                        <td>120</td>
+                        <td>Revisión</td>
+                        <td>Sin observaciones</td>
+                    </tr>
+                    <tr>
+                        <td>5/7/2025 11:00:00 a. m.</td>
+                        <td>Isabel Gómez</td>
+                        <td>130</td>
+                        <td>Corte</td>
+                        <td>Sin observaciones</td>
+                    </tr>
+                    <tr>
+                        <td>5/8/2025 12:00:00 p. m.</td>
+                        <td>Diego Martínez</td>
+                        <td>140</td>
+                        <td>Confección</td>
+                        <td>Sin observaciones</td>
+                    </tr>
+                    <tr>
+                        <td>5/9/2025 1:00:00 p. m.</td>
+                        <td>Patricia López</td>
+                        <td>150</td>
+                        <td>Revisión</td>
+                        <td>Sin observaciones</td>
+                    </tr>
+                    <tr>
+                        <td>5/10/2025 2:00:00 p. m.</td>
+                        <td>Raúl Pérez</td>
+                        <td>160</td>
+                        <td>Corte</td>
+                        <td>Sin observaciones</td>
+                    </tr>
+                    <tr>
+                        <td>5/11/2025 3:00:00 p. m.</td>
+                        <td>Lucía Ramírez</td>
+                        <td>170</td>
+                        <td>Confección</td>
+                        <td>Sin observaciones</td>
+                    </tr>
+                    <tr>
+                        <td>5/12/2025 4:00:00 p. m.</td>
+                        <td>Andrés Gómez</td>
+                        <td>180</td>
+                        <td>Revisión</td>
+                        <td>Sin observaciones</td>
+                    </tr>
+                    <tr>
+                        <td>5/13/2025 5:00:00 p. m.</td>
+                        <td>Elena Torres</td>
+                        <td>190</td>
+                        <td>Corte</td>
+                        <td>Sin observaciones</td>
+                    </tr>
+                    <tr>
+                        <td>5/14/2025 6:00:00 p. m.</td>
+                        <td>Samuel Ruiz</td>
+                        <td>200</td>
+                        <td>Confección</td>
+                        <td>Sin observaciones</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Pie de página -->
+    <footer class="text-center mt-5 py-3 bg-light">
+        <p class="mb-0">&copy; 2025 Sistema de Producción de Confección</p>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
+</body>
+</html>
